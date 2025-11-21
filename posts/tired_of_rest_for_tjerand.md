@@ -9,6 +9,8 @@ obvious and easy to follow. However, as the surface area of your API grows, and 
 your operations require additional context or expansions - you find yourself in a complexity jungle of simply finding an
 _organized_ expansion of your API.
 
+## History
+
 However, the distance between what
 [Roy Fielding's 2000 dissertation](https://ics.uci.edu/~fielding/pubs/dissertation/fielding_dissertation_2up.pdf)
 defining REST is, and how it has been cherry-picked into common practices to develop "REST" APIs is vast. For instance,
