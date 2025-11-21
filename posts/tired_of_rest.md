@@ -2,9 +2,9 @@
 
 Ever felt uncomfortable when deciding which combination of HTTP method, path segments, path parameters to mount a new
 endpoint behind? The current climate when consulting the internet is to assimilate everything into REST - whatever that
-actually means. When reading up on the online resource regarding REST, one will encounter some very strong connotations
+actually means. When reading up on the online resources regarding REST, one will encounter some very strong connotations
 about _URI_ structure, as well as placing significant purpose behind each HTTP method. This heavily impacts the design
-space of your API, if you are to follow REST as described. When applying these principles from the get-go, it may seam
+space of your API, if you are to follow REST as described. When applying these principles from the get-go, it may seem
 obvious and easy to follow. However, as the surface area of your API grows, and your resources grow sub-resources, and
 your operations require additional context or expansions - you find yourself in a complexity jungle of simply finding an
 _organized_ expansion of your API.
@@ -280,7 +280,7 @@ over these basis terms.
 
 ### Operation Names
 
-This is the ideal template of various path segments to construct an operation name that is applicable to most, if not
+This is the ideal template of various path segments to construct an operation name that is applicable too most, if not
 all, API operations:
 
 - `/{resource}/{action}{/quantifier}`
