@@ -1,6 +1,6 @@
 # Tired of REST
 
-Ever felt uncomfortable when deciding which combination of HTTP method, path segments, path parameters to mount a new
+Ever felt uncomfortable when deciding which combination of HTTP method, path segments, and path parameters to mount a new
 endpoint behind? The current climate when consulting the internet is to assimilate everything into REST - whatever that
 actually means. When reading up on the online resources regarding REST, one will encounter some very strong connotations
 about _URI_ structure, as well as placing significant purpose behind each HTTP method. This heavily impacts the design
@@ -8,6 +8,8 @@ space of your API, if you are to follow REST as described. When applying these p
 obvious and easy to follow. However, as the surface area of your API grows, and your resources grow sub-resources, and
 your operations require additional context or expansions - you find yourself in a complexity jungle of simply finding an
 _organized_ expansion of your API.
+
+## History
 
 However, the distance between what
 [Roy Fielding's 2000 dissertation](https://ics.uci.edu/~fielding/pubs/dissertation/fielding_dissertation_2up.pdf)
@@ -18,20 +20,20 @@ of itself has become the new meaning behind the term. Fielding himself uttered f
 any HTTP-based interface as REST API
 [in a 2008 blog post](https://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven). He even clearly states
 that a REST API should not be dependent on any single communication protocol - meaning his definition itself is not
-limited to HTTP based interface.
+limited to HTTP based interfaces.
 
-To better understand were the definition of REST is coming from, we also need to understand the technical landscape of
-the mid-to-late 90s. One of the key factors in the web at this time was addressing. Being able to locate the _data_ that
+To better understand where the definition of REST is coming from, we also need to understand the technical landscape of
+the mid-to-late 90s. One of the key factors in the web at this time was **addressing**. Being able to locate the _data_ that
 was requested in a consistent, programmatic manner. An influential technology largely deployed at the time was Common
 Gateway Interface (CGI), which are dynamic scripts invoked from a fixed server location. The web was invented to share
-research among peers, addressed via hyperlink addresses. These addresses formed the basis of where the data resided, and
-this in turn formed the basis of a Uniform Resource Location (URL), which uniquely addresses data on a given server. As
+research among peers, addressed via hyperlink addresses. These addresses formed the basis of where the data resided.
+This in turn formed the basis of a Uniform Resource Location (URL), which uniquely addresses data on a given server. As
 the technology and ecosystems evolved, an idea of a location-independent unique identifiers emerged - one to serve the
 parent taxonomy to existing schemes like URL, URN, ISBN, and so forth. This is what we know as Uniform Resource
 Identifier (URI). This parent taxonomy was not clearly established in the initial design of URI. It was first clarified
 in [W3C Note 21 September 2001](https://www.w3.org/TR/uri-clarification/) about
 `URIs, URLs, and URNs: Clarifications and Recommendations 1.0`, which outlines a contemporary view that URI simply form
-a superset over `URL` and `URN` - which was further cemented by
+a superset over `URL` and `URN`. This view was further cemented by
 [IETF RFC3986](https://datatracker.ietf.org/doc/html/rfc3986#section-1.1.3) from 2005. Since then, there is still much
 confusion in the industry, and the term `URL` is more or less adopted as the de facto mechanism - much due to the
 prevalence of HTTP based APIs.
@@ -46,7 +48,7 @@ specifications. His 2001 dissertation is primarily a defense of work already don
 specifications - defining an architectural style that conforms to this specification. This is a natural effect in an
 attempt to promote the adoption of ones own work.
 
-The counter-point for the REST architecture is to combat those early days viral Remote Procedure Call (RPC) interfaces
+The REST architecture arose as a counterpoint against those early days viral of Remote Procedure Call (RPC) interfaces
 like CGI. Its key observation is that we are largely caring about data, and stateful transformations of such data.
 
 ## Present Day
@@ -54,13 +56,13 @@ like CGI. Its key observation is that we are largely caring about data, and stat
 For the remainder of this blog post, we will refer to the modern day incarnation of REST - however incorrect that may
 seem from its original definition.
 
-The requirements of modern day APIs are often rater complex, and the set of invariant transformations that can be
+The requirements of modern day APIs are often rather complex, and the set of invariant transformations that can be
 applied to a resource is oft large or plentiful. Expressing these within the confines of REST may be extremely
 difficult. Here are some common pitfalls:
 
 #### Pitfall: Search operation with many parameters
 
-You have a central resource that you want to expose a generic search operation upon. The REST denoted method verb to use
+You have a central resource that you want to expose a generic search operation upon. The REST- denoted method verb to use
 is `GET`, since the operation is idempotent, and the response should be cache-able based upon the URL. You end up
 specifying a set of filtering predicates that you cram into the query string. You have to use the query string, because
 the HTTP specification limits request bodies to `PATCH`, `POST`, and `PUT` methods. It starts out not too bad. Maybe you
@@ -70,13 +72,13 @@ For example, your resource is the set of organizational users. Each user is the 
 organization starts out with a reasonable 20 teams. Performing a search for users accepts some filtering on users
 belonging to any of the specified teams. Given that each team is represented with an UUID, your query string starts
 growing in length rather quickly. What ends up working just fine when the organization is small-ish with 20 teams, ends
-up failing when the organization grew to 200 teams. This ends up exceeding the URL limits, which arbitrarily enforced
+up failing when the organization grew to 200 teams. This ends up exceeding the URL limits, which is arbitrarily enforced
 throughout the internet ecosystem.
 
-The worst part about this scenario, is that its remains a ticking time-bomb in your API. You _may_ of course attempt to
+The worst part about this scenario, is that it remains a ticking time-bomb in your API. You _may_ of course attempt to
 follow the original HTTP/1.1 specification from 1999 in [RFC 2616](https://datatracker.ietf.org/doc/html/rfc2616) and
 return a `414 Request-URI Too Long` - if you are not arbitrarily cut-off by an intermediary proxy or gateway outside of
-your control. Whether or not your can adequately document and guarantee this behavior on the modern web is an entirely
+your control. Whether or not you can adequately document and guarantee this behavior on the modern web is an entirely
 different story. The server/infrastructure landscape is entirely different than what was true at the time the RFC was
 accepted.
 
@@ -97,7 +99,7 @@ starts off rather unpromising:
 > That's a security vulnerability, not a feature.
 
 This is a rather restrictive view of HTTP and the web, presumably still rooted back in the world where the original RFCs
-were written, the Semantic Web was envisioned, and the REST architecture was solidified. It yields no inch to the very
+were written, the Semantic Web was envisioned, and the REST architecture was solidified. It doesn't yield an inch to when faced with the very
 real problems we face in today's age - it dismisses the problem by touting that we're all using the web wrong.
 
 #### Pitfall: Bulk operations
@@ -107,7 +109,7 @@ supports providing hundreds of resource identifiers, they cannot fit into the qu
 evident by the search operation pitfall above.
 
 Thus, we must also sacrifice the usage of the natural HTTP verbs `GET` and `DELETE`, so that we can employ the request
-message body. This itself introduces ambiguity in the API over what methods are employed were, and developer
+message body. This itself introduces ambiguity in the API over what methods are employed where, and developer
 expectations are intermittently broken.
 
 #### Pitfall: Security
@@ -116,47 +118,45 @@ Security concern is not necessarily a pitfall of REST itself, more so for employ
 neither a concern for the development nor consumption of the API - but rather its deployment infrastructure and request
 path traversal towards the API server actually handling the request.
 
-Some deployments of APIs (which were never designed or intended for men-in-green-suits scenario), may end up as part of
-security restricted or limited environment - even if it is hosted in the cloud. There is some very real requirements
-out there that any intermediate processing chain that process or audit the requests must scrub the logs for sensitive information
-prior to persisting the logs. Or at very least before those logs are shared with anyone (i.e., security monitoring
-software) outside of the restricted environment.
+Some deployments of APIs (which were never designed or intended for men-in-green-suits scenarios (read: military)), may end up as part of
+security restricted or limited environment - even if it is hosted in the cloud. There are some very real requirements out
+there that necessitates that any intermediate processing chain that process or audit the requests must scrub the logs for sensitive
+information prior to persisting the logs. Or at the very least before those logs are shared with anyone (i.e., security
+monitoring software) outside of the restricted environment.
 
-For HTTP requests where all application level data is only transmitted in the request body, this is a non-issue. However,
-when the classified information is communicated over the API in query strings or path parameters, we would be required
-to implement such redaction measures. This is because most reverse proxy or intermediate processing software
-for an HTTP deployment nominally logs the entire request URI, including the query string,
-
+For HTTP requests where all application level data is only transmitted in the request body, this is a non-issue.
+However, when the classified information is communicated over the API in query strings or path parameters, we would be
+required to implement such redaction measures. This is because most reverse proxy or intermediate processing software
+for an HTTP deployment nominally logs the entire request URI, including the query string.
 
 ### Caching
 
-Caching is a large portion of the REST architecture, leaning heavily into the fact that stateless data, and idempotent
-operations shall in-and-large be cache-controlled. This is influenced by
+Caching is a large part of the REST architecture, leaning heavily into the fact that stateless data, and idempotent
+operations, shall by and large be cache-controlled. This is influenced by the
 [Cache-Control header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control). The cache
-keys themselves are computed entirely based on the URI and a subset of request headers. This also follows naturally from
-the REST architecture that these operations are thus `GET` methods, due to their idempotent nature, and cache
+keys themselves are computed entirely based on the URI and a subset of request headers. It follows naturally from
+the REST architecture that these operations must be `GET` methods, due to their idempotent nature and cache
 eligibleness.
 
-What type of operations in a modern API that are cacheable is highly contextual, and dependent on the domain of the API
+Which type of operations in a modern API are cacheable or not is highly contextual, and dependent on the domain of the API
 itself. It is also rather dependent on the scale of your operations, and the trade-offs taken when evaluating ones
 position on the [CAP theorem](https://en.wikipedia.org/wiki/CAP_theorem). I'll wager that in today's ecosystem, caching
-for _most_ API operations are rarely performed on the transport layer. There is a plethora of more controllable cache
-mechanisms closer to the data source, whose invalidation mechanisms is reachable for the API owner.
+is rarely performed on the transport layer for _most_ API operations. There is a plethora of more controllable cache
+mechanisms closer to the data source, whose invalidation mechanisms are reachable for the API owner.
 
 All in all, it seems restrictive to perpetuate the necessity of REST on the basis of cache control.
 
 ### Query String complexity
 
 With the evolving set of complexity offered by modern APIs, more and more information is required to be transferred in
-the HTTP request. In lieu of unable to provide a request message body for the HTTP methods `GET` and `DELETE`, and in
-the spirit of following modern day REST, this complexity has migrated into the HTTP query string, in the form of query
+the HTTP request. Since the specification does not allow us to provide a request message body for the HTTP methods `GET` and `DELETE`, and in
+the spirit of following modern day REST, this complexity has migrated into the HTTP query string in the form of query
 parameters. An effort to standardize these were made in
 [RFC 6470](https://datatracker.ietf.org/doc/html/rfc6570#section-3.2.8), and was partially adopted into the
 [OpenAPI](https://spec.openapis.org/oas/v3.2.html#style-values) parameter style specification. However, as noted in the
-OpenAPI specification, there are also many non-standardized variants - in an attempt to capture naturally evolved
-variants that has been implemented and used throughout the last few decades.
+OpenAPI specification, it also documents many non-standardized variants that has naturally blossomed throughout the web ecosystem the last few decades.
 
-My point with this detour is to signal that even modeling vaguely standardized methods of exchanging an array of
+My point with this detour is to signal that something as simple as modeling vaguely standardized methods of exchanging an array of
 identifiers can manifest in a query string in so many ways. Each which oft need to be communicated manually in text
 documentation, instead of being obvious based on the application protocol. This is made even worse if using the
 `deepObject` style to transfer full data structures (which can include arrays). Consult the
@@ -164,12 +164,12 @@ documentation, instead of being obvious based on the application protocol. This 
 
 ### Why HTTP
 
-You may rightfully wonder why we then bother designing our APIs on top of HTTP. If the current practices advocate for
-designing complex service-to-service APIs atop protocol principles designed for the structured, automatic
-machine-to-machine operated, although driven by a human on the other end. Today, we design APIs whose primary purpose is
-machine-to-machine operated, and driven by a machine.
+You may rightfully wonder why we then bother designing our APIs on top of HTTP. The current practices advocate for
+designing complex service-to-service APIs atop protocol principles designed for the structured
+machine-to-machine navigated protocols piloted by a human user. Today, we design APIs whose primary purpose is
+to serve machine-to-machine communication entirely driven by autonomous systems.
 
-We select HTTP because it is ubiquitous. Every switch, router, proxy, and service providers have top-notch support for
+We select HTTP because it is ubiquitous. Every switch, router, proxy, and service provider have top-notch support for
 HTTP. The basics of the protocol is easy to understand for all and any. You do not need advanced programming experience
 to be able to construct a request, send it off, and read & understand the response. We select HTTP not because it is the
 best in class, but because it is the common denominator among all.
@@ -179,9 +179,9 @@ are more suited for the task. Hopefully, any of these will become as approachabl
 
 ## Embrace RPC over HTTP: a predictable alternative
 
-Based on all the above battle scar, I would like to propose an alternative. For most complex HTTP APIs out there, those
-that have many invariants and constrains in their actions, with cascading effects throughout the system, one should
-embrace the RPC mechanism Fielding rejected. Let us call this RPC embraced HTTP API something along the lines of
+Based on all the battle scars obtained through the pitfalls previously mentioned (and many more like it), I would like to propose an alternative. For most complex HTTP APIs out there, specifically those
+that have many invariants and constraints in their actions, with cascading effects throughout the system, one should
+embrace the RPC mechanism Fielding rejected. Let us call this RPC-embraced HTTP API something along the lines of
 Predictable Transfer of Stateful Data - PTSD-HTTP, for short.
 
 This is an _opinionated_ set of guidelines that attempts to take the ambiguity out of the design space for how to
@@ -191,10 +191,10 @@ structure the HTTP API operation. I will summarize them in individual sections.
 
 All operations primarily rely on HTTP Methods: `POST`, `PATCH`, `PUT`.
 
-- `GET` may be used only for operations where we are confident in the cache-ability in the resource, and _must_ set cache
-  control headers with a sufficiently large window.
+- `GET` may be used only for operations where we are confident in the cache-ability in the resource, and _must_ set
+  cache control headers with a sufficiently large window.
 - `GET` may be used for locating a resource by a unique qualifier (whose serialization is a query parameter) ONLY when
-  you are unable to convince your colleges who are still stuck in the REST-bubble.
+  you are unable to convince your colleagues who are still stuck in the REST-bubble.
 
 #### Rule: HTTP paths are operation names
 
@@ -202,8 +202,9 @@ All HTTP paths are unique, regardless of HTTP method. This entails no _path para
 
 Examples of HTTP paths:
 
-- `/users/locate/unit`
-- `/users/locate/search`
+- `/users/locate/single`
+- `/users/locate/bulk`
+- `/users/search`
 - `/groups/fetch`
 
 #### Rule: Pagination
@@ -212,10 +213,10 @@ All pagination for `application/json` is done through the HTTP message body.
 
 This is motivated by multiple factors. A paginated response is _often_ stale the moment it is issued, and cannot be
 reasonably cached. Secondly, some pagination designs may rely on supplying the search predicates on each request, or
-provides a huge opaque cursor. By always forcing the pagination into the HTTP request body, we have a consistent rule set
-for providing it, regardless of chosen pagination mechanism.
+provides a huge opaque cursor. By always forcing the pagination into the HTTP request body, we have a consistent rule
+set for providing it, regardless of chosen pagination mechanism.
 
-There a multiple pagination mechanisms that can be applicable to ones specific API domain. This rule does not enforce
+There are multiple pagination mechanisms that can be applicable to ones specific API domain. This rule does not enforce
 any specific mechanism.
 
 It does however specify the following structure and field names for some predictability.
@@ -258,7 +259,7 @@ interpret their meaning when they appear in an operation name.
 - `locate` - Lookup a resource by some unique qualifier, returning a single resource. If no resource exists by this
   identifier, an erroneous response is returned.
 - `create` - Creates a new resource instance.
-- `update` - Update _piece wise_ properties of an existing resource. This operation is suited for resources with
+- `update` - Update _piecewise_ properties of an existing resource. This operation is suited for resources with
   individual fields.
 - `replace` - Update _all_ content of an existing resource. This operation is suited for blob-like resources, e.g., like
   files opaque JSON objects.
@@ -273,14 +274,14 @@ interpret their meaning when they appear in an operation name.
 - `bulk` - Process the provided set of resources. Used to provide a mechanism for the caller to perform many individual
   operations in a single invocation. There may also be transactional guarantees to the operation.
 
-I have yet to land on good definitions for `remove`, `delete`, or `archive` - when those are applicable.
+I have yet to land on good definitions for `remove`, `delete`, or `archive`.
 
 There may be resource specific action names that fit better for that specific resource, and it should take precedence
-over these basis terms.
+over these normative actions.
 
 ### Operation Names
 
-This is the ideal template of various path segments to construct an operation name that is applicable too most, if not
+This is the ideal template of various path segments to construct an operation name that is applicable to most, if not
 all, API operations:
 
 - `/{resource}/{action}{/quantifier}`
@@ -294,7 +295,7 @@ Here is the classical OpenAPI petstore example expressed as these operation name
 
 - `GET /pets` -> `POST /pets/search`
   - `limit` parameter serialized in request body.
-  - `next` URI link serialized in response body, `metadata` object.
+  - `next` URI link serialized in `metadata` object in response body.
 - `POST /pets` -> `POST /pets/create`
 - `GET /pets/{petId}` -> `/pets/locate/single`
   - `petId` parameter serialized in request body.
